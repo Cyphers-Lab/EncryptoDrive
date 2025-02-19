@@ -1,0 +1,21 @@
+{
+    "window": {
+        "width": 800,
+        "height": 600,
+        "minimizeToTray": true
+    },
+    "password": {
+        "minLength": 12,
+        "minUppercase": 1,
+        "minLowercase": 1,
+        "minDigits": 1,
+        "minSpecial": 1,
+        "checkDictionary": true,
+        "checkPatterns": true
+    },
+    "drive": {
+        "mountPoint": "/media/encrypto",
+        "autoMount": false,
+        "saveLastMount": true
+    }
+}

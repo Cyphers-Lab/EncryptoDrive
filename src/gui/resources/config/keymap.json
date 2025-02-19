@@ -1,0 +1,12 @@
+{
+    "shortcuts": {
+        "mount": "Ctrl+M",
+        "unmount": "Ctrl+U",
+        "settings": "Ctrl+,",
+        "quit": "Ctrl+Q"
+    },
+    "actions": {
+        "trayDoubleClick": "toggle",
+        "escKey": "minimize"
+    }
+}

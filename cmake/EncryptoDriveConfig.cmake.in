@@ -1,0 +1,32 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# Find dependencies
+find_dependency(OpenSSL REQUIRED)
+find_dependency(PkgConfig REQUIRED)
+find_dependency(Threads REQUIRED)
+
+# Find libsodium using pkg-config
+pkg_check_modules(LIBSODIUM REQUIRED libsodium)
+
+# Include target exports
+include("${CMAKE_CURRENT_LIST_DIR}/EncryptoDriveTargets.cmake")
+
+# Add imported library targets
+check_required_components(EncryptoDrive)
+
+# Set version variables
+set(EncryptoDrive_VERSION @PROJECT_VERSION@)
+set(EncryptoDrive_VERSION_MAJOR @PROJECT_VERSION_MAJOR@)
+set(EncryptoDrive_VERSION_MINOR @PROJECT_VERSION_MINOR@)
+set(EncryptoDrive_VERSION_PATCH @PROJECT_VERSION_PATCH@)
+
+# Add include directories
+set_and_check(EncryptoDrive_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+
+# Add library directories
+set_and_check(EncryptoDrive_LIBRARY_DIR "@PACKAGE_LIB_INSTALL_DIR@")
+
+# Set found flag
+set(EncryptoDrive_FOUND TRUE)

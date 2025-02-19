@@ -1,0 +1,66 @@
+#pragma once
+
+#include <string_view>
+#include <cstddef>
+
+namespace encrypto::fs::config {
+
+// FUSE configuration
+inline constexpr int FUSE_API_VERSION = @FUSE_API_VERSION@;
+inline constexpr std::string_view FUSE_MOUNT_PROG = "@FUSE_MOUNT_PROG@";
+inline constexpr std::string_view FUSE_UNMOUNT_PROG = "@FUSE_UNMOUNT_PROG@";
+
+// Mount configuration
+inline constexpr std::string_view DEFAULT_MOUNT_DIR = "@ENCRYPTO_MOUNT_DIR@";
+inline constexpr std::string_view VOLUMES_DIR = "@ENCRYPTO_VOLUMES_DIR@";
+inline constexpr std::string_view METADATA_DIR = "@ENCRYPTO_METADATA_DIR@";
+inline constexpr std::string_view TEMP_DIR = "@ENCRYPTO_TEMP_DIR@";
+
+// Filesystem parameters
+inline constexpr size_t BLOCK_SIZE = 4096;              // 4KB blocks
+inline constexpr size_t MAX_NAME_LENGTH = 255;          // Max filename length
+inline constexpr size_t MAX_PATH_LENGTH = 4096;         // Max path length
+inline constexpr size_t MAX_SYMLINK_LENGTH = 4096;      // Max symlink length
+inline constexpr size_t MAX_FILE_SIZE = 1ULL << 63;     // Max file size (8 EB)
+inline constexpr size_t DIR_CACHE_SIZE = 65536;         // Directory cache entries
+inline constexpr size_t INODE_CACHE_SIZE = 65536;       // Inode cache entries
+inline constexpr size_t ATTR_CACHE_TIMEOUT = 1;         // Attribute cache timeout (seconds)
+inline constexpr size_t ENTRY_CACHE_TIMEOUT = 1;        // Entry cache timeout (seconds)
+
+// I/O parameters
+inline constexpr size_t READ_AHEAD_SIZE = 131072;       // 128KB read-ahead
+inline constexpr size_t WRITE_BUFFER_SIZE = 1048576;    // 1MB write buffer
+inline constexpr size_t MAX_BACKGROUND = 12;            // Max background threads
+inline constexpr size_t CONGESTION_THRESHOLD = 24;      // Thread congestion threshold
+inline constexpr size_t MAX_WRITE_GATHER = 128;         // Max writes to gather
+inline constexpr size_t SYNC_INTERVAL = 30;             // Sync interval (seconds)
+
+// Encryption parameters
+inline constexpr size_t SECTOR_SIZE = 512;              // Disk sector size
+inline constexpr size_t HEADER_SIZE = 4096;             // Volume header size
+inline constexpr size_t IV_SIZE = 16;                   // IV size for each sector
+inline constexpr size_t TAG_SIZE = 16;                  // Auth tag size per sector
+
+// Feature detection
+inline constexpr bool has_splice = @HAVE_SPLICE@;            // splice() support
+inline constexpr bool has_copy_file_range = @HAVE_COPY_FILE_RANGE@;
+inline constexpr bool has_falloc = @HAVE_FALLOC@;           // fallocate() support
+inline constexpr bool has_posix_falloc = @HAVE_POSIX_FALLOCATE@;
+inline constexpr bool has_xattr = @HAVE_SETXATTR@;          // Extended attributes
+inline constexpr bool has_acl = @HAVE_ACL@;                // ACL support
+inline constexpr bool has_libaio = @HAVE_LIBAIO@;          // Async I/O support
+
+// Debug options
+#ifdef NDEBUG
+inline constexpr bool DEBUG_IO = false;                 // Debug I/O operations
+inline constexpr bool DEBUG_CRYPTO = false;             // Debug crypto operations
+inline constexpr bool DEBUG_CACHE = false;              // Debug cache operations
+inline constexpr bool PARANOID_CHECKS = false;          // Extra integrity checks
+#else
+inline constexpr bool DEBUG_IO = true;
+inline constexpr bool DEBUG_CRYPTO = true;
+inline constexpr bool DEBUG_CACHE = true;
+inline constexpr bool PARANOID_CHECKS = true;
+#endif
+
+} // namespace encrypto::fs::config

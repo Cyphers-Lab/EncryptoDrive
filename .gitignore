@@ -1,0 +1,53 @@
+# Build directories
+build/
+cmake-build*/
+out/
+
+# IDE directories
+.vs/
+.vscode/
+.idea/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+# Test output
+test-output/
+
+# Binary files
+*.exe
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+
+# OS specific
+.DS_Store
+.Thumbs.db
+
+# Package files
+_CPack_Packages/
+*.deb
+*.rpm
+*.zip
+*.tar.gz
+
+# Generated documentation
+docs/generated/
+docs/doxygen/
+
+# Version control merge files
+*.orig
+
+# Core dumps
+core
+*.core
