@@ -47,6 +47,7 @@ public:
      */
     FileSystem(std::shared_ptr<core::EncryptionEngine> encryption_engine,
                std::shared_ptr<core::KeysManager> keys_manager);
+    ~FileSystem();
 
     /**
      * @brief Read file contents
@@ -100,8 +101,14 @@ public:
     std::vector<fs::path> listDirectory(const fs::path& path);
 
 private:
+    // Forward declaration of implementation class
     class Impl;
+    // Defined in fsops.cpp
     std::unique_ptr<Impl> impl_;
+    
+    // Prevent copying
+    FileSystem(const FileSystem&) = delete;
+    FileSystem& operator=(const FileSystem&) = delete;
 };
 
 } // namespace encrypto::fs

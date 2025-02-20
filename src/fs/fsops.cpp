@@ -56,11 +56,15 @@ public:
             return {};
         }
 
+        // Convert to SecureVector
+        core::SecureMemory::SecureVector<uint8_t> secure_key(key.begin(), key.end());
+        core::SecureMemory::SecureVector<uint8_t> secure_tag(tag.begin(), tag.end());
+
         // Decrypt data
         auto decrypted = encryption_engine_->decrypt(
-            key,
+            secure_key,
             encrypted_data,
-            tag);
+            secure_tag);
 
         if (decrypted.empty() || decrypted.size() != original_size) {
             return {};
@@ -90,14 +94,18 @@ public:
                 return {false, {}, "Failed to derive key"};
             }
 
-            // Prepare tag buffer
-            std::vector<uint8_t> tag(config::TAG_SIZE);
+            // Convert to SecureVector
+            core::SecureMemory::SecureVector<uint8_t> secure_key(key.begin(), key.end());
+            core::SecureMemory::SecureVector<uint8_t> secure_tag(config::TAG_SIZE);
 
             // Encrypt data
             auto encrypted = encryption_engine_->encrypt(
-                key,
+                secure_key,
                 data,
-                tag);
+                secure_tag);
+
+            // Convert tag back to vector for storage
+            std::vector<uint8_t> tag(secure_tag.data(), secure_tag.data() + secure_tag.size());
 
             if (encrypted.empty()) {
                 return {false, {}, "Encryption failed"};
@@ -263,7 +271,9 @@ FileSystem::FileSystem(std::shared_ptr<core::EncryptionEngine> encryption_engine
                       std::shared_ptr<core::KeysManager> keys_manager)
     : impl_(std::make_unique<Impl>(std::move(encryption_engine),
                                   std::move(keys_manager))) {
-}
+    }
+
+FileSystem::~FileSystem() = default;
 
 std::vector<uint8_t> FileSystem::readFile(const fs::path& path) {
     return impl_->readFile(path);

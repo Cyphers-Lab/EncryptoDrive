@@ -147,15 +147,15 @@ public:
             case Format::JSON: {
                 nlohmann::json j = nlohmann::json::array();
                 for (const auto& event : events) {
-                    j.push_back({
-                        {"id", event.id},
-                        {"type", static_cast<int>(event.type)},
-                        {"userId", event.data.userId},
-                        {"resourceId", event.data.resourceId},
-                        {"action", event.data.action},
-                        {"details", event.data.details},
-                        {"timestamp", std::chrono::system_clock::to_time_t(event.data.timestamp)}
-                    });
+                    nlohmann::json event_json;
+                    event_json["id"] = event.id;
+                    event_json["type"] = static_cast<int>(event.type);
+                    event_json["userId"] = event.data.userId;
+                    event_json["resourceId"] = event.data.resourceId;
+                    event_json["action"] = event.data.action;
+                    event_json["details"] = event.data.details.value_or("");
+                    event_json["timestamp"] = std::chrono::system_clock::to_time_t(event.data.timestamp);
+                    j.push_back(event_json);
                 }
                 output << j.dump(2);
                 break;

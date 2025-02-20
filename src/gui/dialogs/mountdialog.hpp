@@ -62,7 +62,7 @@ public:
     QString getMountPoint() const;
     bool isMountPointValid() const;
 
-public slots:
+public Q_SLOTS:
     // UI actions
     void browseKeyFile();
     void browseMountPoint();
@@ -70,7 +70,7 @@ public slots:
     void showAdvancedOptions(bool show);
     void updatePasswordStrength(const QString& password);
 
-signals:
+Q_SIGNALS:
     // User interactions 
     void optionsChanged();
     void passwordEntered(const QString& password);
@@ -83,7 +83,7 @@ protected:
     void closeEvent(QCloseEvent* event) override;
     bool eventFilter(QObject* obj, QEvent* event) override;
 
-private slots:
+private Q_SLOTS:
     // Internal slots
     void onPasswordChanged();
     void onKeyFileToggled(bool enabled);

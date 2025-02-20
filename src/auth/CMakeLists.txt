@@ -1,4 +1,7 @@
-# Authentication library target
+# Create authentication library target
+add_library(encrypto-auth SHARED)
+
+# Add sources
 target_sources(encrypto-auth PRIVATE
     auth.cpp
     passwordvalidator.cpp

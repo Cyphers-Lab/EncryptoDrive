@@ -21,7 +21,7 @@ public:
     bool useRecoveryKey() const;
     QString recoveryKey() const;
 
-private slots:
+private Q_SLOTS:
     void onRecoveryToggled(bool checked);
     void onTextChanged();
 

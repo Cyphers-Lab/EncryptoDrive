@@ -70,7 +70,7 @@ public:
     void setSortColumn(Column column, Qt::SortOrder order = Qt::AscendingOrder);
     void setStatusFilter(const QString& status);
 
-public slots:
+public Q_SLOTS:
     // UI updates
     void refresh();
     void sort();
@@ -80,7 +80,7 @@ public slots:
     void setIconSize(const QSize& size);
     void setShowHidden(bool show);
 
-signals:
+Q_SIGNALS:
     // Selection signals
     void driveSelected(const QString& path);
     void driveDoubleClicked(const QString& path);

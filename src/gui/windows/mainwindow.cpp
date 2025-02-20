@@ -10,6 +10,7 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 #include <QTimer>
+#include <filesystem>
 
 namespace encrypto::gui {
 
@@ -240,7 +241,53 @@ void MainWindow::onNewDrive() {
     
     if (path.isEmpty()) return;
     
-    // TODO: Implement drive creation
+    PasswordDialog passDialog(this);
+    passDialog.setWindowTitle(tr("Set Drive Password"));
+    
+    if (passDialog.exec() != QDialog::Accepted) return;
+    
+    QString password = passDialog.password();
+    if (password.isEmpty()) return;
+    
+    try {
+        // Initialize encryption engine and keys manager
+        auto engine = std::make_shared<core::EncryptionEngine>();
+        auto keys_manager = std::make_shared<core::KeysManager>(
+            std::filesystem::path(QDir::homePath().toStdString()) / ".encrypto" / "keys"
+        );
+        
+        // Create filesystem
+        auto fs = std::make_shared<fs::FileSystem>(engine, keys_manager);
+        
+        // Set up FUSE filesystem
+        auto fuse_fs = std::make_shared<fs::FuseFilesystem>(fs);
+        
+        // Create initial encrypted container
+        fs::FsResult result = fs->writeFile(std::filesystem::path(path.toStdString()), std::vector<uint8_t>());
+        
+        if (!result.success) {
+            handleError(tr("Failed to create drive"));
+            return;
+        }
+        
+        // Add to drive list
+        DriveList::DriveInfo info;
+        info.path = path;
+        info.label = QFileInfo(path).fileName();
+        info.encrypted = true;
+        info.mounted = false;
+        info.type = "Encrypted Drive";
+        info.total_space = 0;
+        info.last_mounted = QDateTime::currentDateTime();
+        
+        drive_list_->addDrive(info);
+        
+        updateActions();
+        statusBar()->showMessage(tr("Drive created successfully"), 3000);
+    }
+    catch (const std::exception& e) {
+        handleError(tr("Failed to create drive: %1").arg(e.what()));
+    }
 }
 
 void MainWindow::onOpenDrive() {
@@ -265,16 +312,100 @@ void MainWindow::onEjectDrive() {
     unmountDrive(path, true);
 }
 
-void MainWindow::onDriveSettings() {
-    // TODO: Implement drive settings dialog
+void MainWindow::mountDrive(const QString& path, bool prompt) {
+    if (!QFile::exists(path)) {
+        handleError(tr("Drive file not found: %1").arg(path));
+        return;
+    }
+    
+    if (prompt) {
+        PasswordDialog passDialog(this);
+        passDialog.setWindowTitle(tr("Enter Drive Password"));
+        
+        if (passDialog.exec() != QDialog::Accepted) return;
+        
+        QString password = passDialog.password();
+        if (password.isEmpty()) return;
+    }
+    
+    try {
+        // Initialize components
+        auto engine = std::make_shared<core::EncryptionEngine>();
+        auto keys_manager = std::make_shared<core::KeysManager>(
+            std::filesystem::path(QDir::homePath().toStdString()) / ".encrypto" / "keys"
+        );
+        auto fs = std::make_shared<fs::FileSystem>(engine, keys_manager);
+        auto fuse_fs = std::make_shared<fs::FuseFilesystem>(fs);
+        
+        // Set up mount options
+        fs::MountOptions options;
+        options.mount_point = std::filesystem::path(QDir::temp().filePath("encrypto_" + 
+            QString::number(QDateTime::currentMSecsSinceEpoch())).toStdString());
+        options.read_only = false;
+        options.allow_other = true;
+        options.single_thread = false;
+        
+        // Mount the filesystem
+        if (!fuse_fs->mount(options)) {
+            handleError(tr("Failed to mount drive"));
+            return;
+        }
+        
+        // Update drive info
+        DriveList::DriveInfo info = drive_list_->getDriveInfo(path);
+        info.mounted = true;
+        info.last_mounted = QDateTime::currentDateTime();
+        drive_list_->updateDrive(path, info);
+        
+        // Store mounted filesystem
+        mounted_drives_.push_back(fuse_fs);
+        
+        updateActions();
+        statusBar()->showMessage(tr("Drive mounted successfully"), 3000);
+        
+        emit driveStatusChanged(path, true);
+    }
+    catch (const std::exception& e) {
+        handleError(tr("Failed to mount drive: %1").arg(e.what()));
+    }
 }
 
-void MainWindow::onImportDrive() {
-    // TODO: Implement drive import
-}
-
-void MainWindow::onExportDrive() {
-    // TODO: Implement drive export
+void MainWindow::unmountDrive(const QString& path, bool force) {
+    try {
+        auto it = std::find_if(mounted_drives_.begin(), mounted_drives_.end(),
+            [&path](const auto& fs) {
+                return fs && fs->getMountPoint() == std::filesystem::path(path.toStdString());
+            });
+            
+        if (it == mounted_drives_.end()) {
+            handleError(tr("Drive not mounted: %1").arg(path));
+            return;
+        }
+        
+        // Unmount the filesystem
+        if (!(*it)->unmount()) {
+            if (!force) {
+                handleError(tr("Failed to unmount drive"));
+                return;
+            }
+        }
+        
+        // Update drive info
+        DriveList::DriveInfo info = drive_list_->getDriveInfo(path);
+        info.mounted = false;
+        drive_list_->updateDrive(path, info);
+        
+        // Remove from mounted drives list
+        mounted_drives_.erase(it);
+        
+        updateActions();
+        statusBar()->showMessage(tr("Drive unmounted successfully"), 3000);
+        
+        emit driveStatusChanged(path, false);
+    }
+    catch (const std::exception& e) {
+        handleError(tr("Failed to unmount drive: %1").arg(e.what()));
+    }
 }
 
 void MainWindow::onQuit() {
@@ -327,6 +458,18 @@ void MainWindow::onViewMode(int mode) {
 
 void MainWindow::onPreferences() {
     // TODO: Implement preferences dialog
+}
+
+void MainWindow::onDriveSettings() {
+    // TODO: Implement drive settings dialog
+}
+
+void MainWindow::onImportDrive() {
+    // TODO: Implement drive import functionality
+}
+
+void MainWindow::onExportDrive() {
+    // TODO: Implement drive export functionality
 }
 
 void MainWindow::onChangePassword() {
@@ -442,17 +585,6 @@ void MainWindow::onDriveContextMenu(const QPoint& pos) {
     }
 }
 
-void MainWindow::mountDrive(const QString& path, bool prompt) {
-    // TODO: Implement mount logic
-    Q_UNUSED(path);
-    Q_UNUSED(prompt);
-}
-
-void MainWindow::unmountDrive(const QString& path, bool force) {
-    // TODO: Implement unmount logic
-    Q_UNUSED(path);
-    Q_UNUSED(force);
-}
 
 void MainWindow::refreshDriveList() {
     drive_list_->refresh();

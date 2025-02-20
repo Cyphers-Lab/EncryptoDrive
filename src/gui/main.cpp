@@ -6,7 +6,7 @@
 #include <QDebug>
 #include <QFile>
 
-void dumpResourceTree(const QString& path = ":") {
+void dumpResourceTree(const QString& path = QLatin1String(":")) {
     qDebug() << "\nResource tree at" << path << ":";
     QDirIterator it(path, QDirIterator::Subdirectories);
     while (it.hasNext()) {
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     qDebug() << "Library paths:" << QCoreApplication::libraryPaths();
 
     // Test loading a specific icon
-    QString testIcon = ":/icons/new.png";
+    QString testIcon = QLatin1String(":/icons/new.png");
     QFile iconFile(testIcon);
     qDebug() << "\nTesting icon:" << testIcon;
     qDebug() << "File exists:" << iconFile.exists();

@@ -1,0 +1,6 @@
+Running main() from /usr/src/googletest/googletest/src/gtest_main.cc
+Note: Google Test filter = MerkleTreeTest.ProofGenerationAndVerification
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MerkleTreeTest
+[ RUN      ] MerkleTreeTest.ProofGenerationAndVerification

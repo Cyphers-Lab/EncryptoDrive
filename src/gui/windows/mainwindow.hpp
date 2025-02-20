@@ -37,7 +37,10 @@ protected:
     void closeEvent(QCloseEvent* event) override;
     void changeEvent(QEvent* event) override;
 
-private slots:
+Q_SIGNALS:
+    void driveStatusChanged(const QString& path, bool mounted);
+
+private Q_SLOTS:
     // Menu actions
     void onNewDrive();
     void onOpenDrive();
@@ -142,7 +145,7 @@ private:
     } actions_;
 
     DriveList* drive_list_{nullptr};
-    std::vector<std::unique_ptr<fs::FuseFilesystem>> mounted_drives_;
+    std::vector<std::shared_ptr<fs::FuseFilesystem>> mounted_drives_;
 
     // Settings
     bool minimize_to_tray_{false};

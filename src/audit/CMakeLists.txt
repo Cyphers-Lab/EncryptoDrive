@@ -3,9 +3,20 @@ add_library(audit
     auditlog.hpp
 )
 
+# Add target to export set
+set_property(TARGET audit PROPERTY EXPORT_NAME audit)
+install(TARGETS audit
+    EXPORT encrypto-targets
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
+)
+
 target_include_directories(audit PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/include
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
 )
 
 find_package(OpenSSL REQUIRED)

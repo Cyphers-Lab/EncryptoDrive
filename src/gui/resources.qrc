@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RCC version="1.0">
   <qresource>
-    <file alias="new">resources/icons/new.png</file>
-    <file alias="open">resources/icons/open.png</file>
-    <file alias="save">resources/icons/save.png</file>
-    <file alias="close">resources/icons/close.png</file>
-    <file alias="quit">resources/icons/quit.png</file>
-    <file alias="mount">resources/icons/mount.png</file>
-    <file alias="unmount">resources/icons/unmount.png</file>
-    <file alias="refresh">resources/icons/refresh.png</file>
-    <file alias="settings">resources/icons/settings.png</file>
-    <file alias="help">resources/icons/help.png</file>
-    <file alias="about">resources/icons/about.png</file>
-    <file alias="keys">resources/icons/keys.png</file>
-    <file alias="drive">resources/icons/drive.png</file>
-    <file alias="eject">resources/icons/eject.png</file>
-    <file alias="import">resources/icons/import.png</file>
-    <file alias="export">resources/icons/export.png</file>
-    <file alias="update">resources/icons/update.png</file>
-    <file alias="password">resources/icons/password.png</file>
+    <file alias="new">icons/new.png</file>
+    <file alias="open">icons/open.png</file>
+    <file alias="close">icons/close.png</file>
+    <file alias="quit">icons/quit.png</file>
+    <file alias="mount">icons/mount.png</file>
+    <file alias="unmount">icons/unmount.png</file>
+    <file alias="refresh">icons/refresh.png</file>
+    <file alias="settings">icons/settings.png</file>
+    <file alias="help">icons/help.png</file>
+    <file alias="about">icons/about.png</file>
+    <file alias="keys">icons/keys.png</file>
+    <file alias="drive">icons/drive.png</file>
+    <file alias="eject">icons/eject.png</file>
+    <file alias="import">icons/import.png</file>
+    <file alias="export">icons/export.png</file>
+    <file alias="update">icons/update.png</file>
+    <file alias="password">icons/password.png</file>
   </qresource>
 </RCC>
