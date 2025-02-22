@@ -24,18 +24,27 @@ target_link_libraries(encrypto-tests
 target_include_directories(encrypto-tests
     PRIVATE
         ${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_BINARY_DIR}/include
+        ${CMAKE_SOURCE_DIR}/tests
 )
 
 # Add tests to CTest
-add_test(NAME EncryptoTests COMMAND encrypto-tests)
+add_test(NAME EncryptoTests 
+         COMMAND encrypto-tests
+         WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # Configure test environment
 set_tests_properties(EncryptoTests PROPERTIES
-    ENVIRONMENT "ENCRYPTO_TEST_DIR=${CMAKE_BINARY_DIR}/test-output"
+    ENVIRONMENT "TEST_OUTPUT_DIR=${TEST_OUTPUT_DIR};TEST_DATA_DIR=${TEST_DATA_DIR};GTEST_COLOR=1"
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
-# Create test output directory
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/test-output)
+# Create test directories with proper permissions
+file(MAKE_DIRECTORY ${TEST_OUTPUT_DIR})
+file(MAKE_DIRECTORY ${TEST_DATA_DIR})
+execute_process(
+    COMMAND chmod -R 777 ${TEST_OUTPUT_DIR} ${TEST_DATA_DIR}
+)
 
 # Set testing properties
 set_target_properties(encrypto-tests PROPERTIES

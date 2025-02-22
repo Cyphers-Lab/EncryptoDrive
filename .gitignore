@@ -49,5 +49,4 @@ docs/doxygen/
 *.orig
 
 # Core dumps
-core
 *.core

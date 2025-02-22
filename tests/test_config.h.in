@@ -1,0 +1,4 @@
+#pragma once
+
+#define TEST_OUTPUT_DIR "@TEST_OUTPUT_DIR@"
+#define TEST_DATA_DIR "@TEST_DATA_DIR@" 

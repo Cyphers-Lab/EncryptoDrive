@@ -1,0 +1,44 @@
+#pragma once
+
+#include <cstddef>
+
+namespace encrypto::core::config {
+
+// Version information
+inline constexpr const char* VERSION = "@PROJECT_VERSION@";
+inline constexpr const char* BUILD_TYPE = "@CMAKE_BUILD_TYPE@";
+
+// OpenSSL configuration
+inline constexpr const char* CONFIG_DIR = "@OPENSSL_CONF_DIR@";
+inline constexpr const char* OPENSSL_FIPS_CONFIG = "openssl-fips.cnf";
+
+// Security parameters
+inline constexpr size_t KEY_SIZE = 32;  // 256 bits
+inline constexpr size_t IV_SIZE = 16;   // 128 bits
+inline constexpr size_t TAG_SIZE = 16;  // 128 bits
+inline constexpr size_t SALT_SIZE = 32; // 256 bits
+inline constexpr size_t MIN_KEY_ITERATIONS = 100000;
+
+// Feature flags
+inline constexpr bool SECURE_MEMORY = 
+#ifdef ENCRYPTO_SECURE_MEMORY
+    true;
+#else
+    false;
+#endif
+
+inline constexpr bool MEMORY_LOCK =
+#ifdef ENCRYPTO_MEMORY_LOCK
+    true;
+#else
+    false;
+#endif
+
+inline constexpr bool FIPS_MODE =
+#ifdef USE_FIPS
+    true;
+#else
+    false;
+#endif
+
+} // namespace encrypto::core::config

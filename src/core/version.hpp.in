@@ -1,0 +1,19 @@
+#pragma once
+
+namespace encrypto::core::version {
+
+inline constexpr int MAJOR = @PROJECT_VERSION_MAJOR@;
+inline constexpr int MINOR = @PROJECT_VERSION_MINOR@;
+inline constexpr int PATCH = @PROJECT_VERSION_PATCH@;
+
+inline constexpr const char* VERSION_STRING = "@PROJECT_VERSION@";
+inline constexpr const char* BUILD_TIMESTAMP = "@BUILD_TIMESTAMP@";
+inline constexpr const char* BUILD_TYPE = "@CMAKE_BUILD_TYPE@";
+inline constexpr bool DEBUG_BUILD = 
+#ifdef NDEBUG
+    false;
+#else
+    true;
+#endif
+
+} // namespace encrypto::core::version

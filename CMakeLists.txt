@@ -13,6 +13,17 @@ endif()
 # Enable testing project-wide
 enable_testing()
 
+# Set up test environment
+set(TEST_OUTPUT_DIR ${CMAKE_BINARY_DIR}/test-output)
+set(TEST_DATA_DIR ${CMAKE_BINARY_DIR}/test-data)
+
+# Configure test environment variables
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_config.h.in
+    ${CMAKE_BINARY_DIR}/include/test_config.h
+    @ONLY
+)
+
 # Include GNUInstallDirs for installation paths
 include(GNUInstallDirs)
 
@@ -123,4 +134,15 @@ configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/EncryptoDriveConfig.cmake.in
     ${CMAKE_BINARY_DIR}/EncryptoDriveConfig.cmake
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/EncryptoDrive
+)
+
+# Add uninstall target
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in
+    ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake
+    @ONLY
+)
+
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake
 )

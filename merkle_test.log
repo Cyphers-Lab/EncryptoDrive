@@ -1,0 +1,92 @@
+=== Test Started ===
+
+=== Starting ProofGenerationAndVerification test ===
+
+-- Testing root level file --
+Adding root file with data size: 14
+
+=== After adding root file ===
+
+=== updateNode: Adding path /root.txt ===
+Data size: 14 bytes
+Created node with hash: 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5
+Node hash: 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5
+No root exists yet - Creating first node as root
+Root hash set to: 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5
+Root(32): 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5
+Root proof elements: 0
+
+=== After getting root proof ===
+Getting root hash
+Root hash: 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5
+
+=== Getting proof for path: /root.txt ===
+Found node at path: /root.txt
+Found node at path: /root.txt
+Node hash: 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5
+Node is root, no proof needed
+
+=== After root verification ===
+
+=== Verifying proof for path: /root.txt ===
+Initial data hash: 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5
+Found node at path: /root.txt
+Stored node hash: 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5
+Node is root, comparing hashes directly
+Verification result: 1
+
+-- Testing second level file --
+Adding second file with data size: 16
+
+=== After adding second file ===
+
+=== updateNode: Adding path /second.txt ===
+Data size: 16 bytes
+Created node with hash: ef653ecab245ef4f7f43c19b4fc501b444e172d2c2a3de0c89eaee6f50d19a6a
+Node hash: ef653ecab245ef4f7f43c19b4fc501b444e172d2c2a3de0c89eaee6f50d19a6a
+Converting root file to directory structure
+Updating path map for directory structure
+Left child hash: 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5
+Right child hash: ef653ecab245ef4f7f43c19b4fc501b444e172d2c2a3de0c89eaee6f50d19a6a
+New root hash: 113371ecbdb37bdb640c5a4c63c80de570a2bf8f85a303b42b7ba75c9b9bd588
+Second file proof elements: 1
+First proof element(32): 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5
+
+=== After getting second proof ===
+
+=== Getting proof for path: /second.txt ===
+Found node at path: /second.txt
+Found node at path: /second.txt
+Node hash: ef653ecab245ef4f7f43c19b4fc501b444e172d2c2a3de0c89eaee6f50d19a6a
+Node is right child of root, using left sibling
+Added left sibling hash: 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5
+
+=== After second verification ===
+
+=== Verifying proof for path: /second.txt ===
+Initial data hash: ef653ecab245ef4f7f43c19b4fc501b444e172d2c2a3de0c89eaee6f50d19a6a
+Found node at path: /second.txt
+Stored node hash: ef653ecab245ef4f7f43c19b4fc501b444e172d2c2a3de0c89eaee6f50d19a6a
+Direct child of root
+Node is right child, combining with left sibling
+Combined hash input: 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd5ef653ecab245ef4f7f43c19b4fc501b444e172d2c2a3de0c89eaee6f50d19a6a
+Final computed hash: 113371ecbdb37bdb640c5a4c63c80de570a2bf8f85a303b42b7ba75c9b9bd588
+Root hash: 113371ecbdb37bdb640c5a4c63c80de570a2bf8f85a303b42b7ba75c9b9bd588
+Verification result: 1
+
+=== After wrong data verification ===
+
+=== Verifying proof for path: /second.txt ===
+Initial data hash: 8810ad581e59f2bc3928b261707a71308f7e139eb04820366dc4d5c18d980225
+Found node at path: /second.txt
+Stored node hash: ef653ecab245ef4f7f43c19b4fc501b444e172d2c2a3de0c89eaee6f50d19a6a
+Direct child of root
+Node is right child, combining with left sibling
+Combined hash input: 6e7873916fd7ebaf510d1c4f6c82e318e75f740b72df07633aec6e08ebeecfd58810ad581e59f2bc3928b261707a71308f7e139eb04820366dc4d5c18d980225
+Final computed hash: 9eb43a0281296a91320514a39acc7ae6974241c1fb0f2b11411dd1bc72a27da0
+Root hash: 113371ecbdb37bdb640c5a4c63c80de570a2bf8f85a303b42b7ba75c9b9bd588
+Verification result: 0
+
+=== Final Debug Output ===
+
+=== Test Finished ===
