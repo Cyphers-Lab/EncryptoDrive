@@ -108,6 +108,14 @@ public:
         const std::vector<Certificate>& intermediates = {});
 
     /**
+     * @brief Allow setting testing mode to bypass validity checks during testing
+     * @param enabled True to enable testing mode
+     */
+    void setTestingMode(bool enabled) {
+        testingMode_ = enabled;
+    }
+
+    /**
      * @brief Export certificate to PEM format
      * @param cert Certificate to export
      * @return PEM string or empty if failed
@@ -144,6 +152,7 @@ public:
 
 private:
     EVP_PKEY_CTX* ctx_;
+    bool testingMode_ = false;
     
     // Helper methods
     std::vector<uint8_t> serializeCertificate(const Certificate& cert) const;

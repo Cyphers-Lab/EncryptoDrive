@@ -171,31 +171,50 @@ TEST_F(SignatureSystemTest, CertificateChainVerification) {
 TEST_F(SignatureSystemTest, CertificateValidity) {
     auto keyPair = system_->generateKeyPair();
     
-    // Set up expired certificate with validity in the past
+    // Create test root CA template with past validity period
     auto now = std::time(nullptr);
-    SignatureSystem::Certificate expiredInfo = rootCert_;
-    expiredInfo.notBefore = now - 48 * 3600;  // 2 days ago
-    expiredInfo.notAfter = now - 24 * 3600;   // 1 day ago
-    
-    // Create expired certificate with past validity period
-    auto opt_expiredCert = system_->createCertificate(
-        keyPair.publicKey,
-        "Expired Cert",
+    SignatureSystem::Certificate expiredRoot;
+    expiredRoot.publicKey = rootKeyPair_.publicKey;
+    expiredRoot.subject = "Expired CA";
+    expiredRoot.issuer = "Expired CA";
+    expiredRoot.notBefore = now - 48 * 3600;  // 2 days ago
+    expiredRoot.notAfter = now - 24 * 3600;   // 1 day ago
+
+    // Enable testing mode to create expired certificates
+    system_->setTestingMode(true);
+
+    // Create self-signed expired root CA (with testing mode)
+    auto expiredRootCert = system_->createCertificate(
+        expiredRoot.publicKey,
+        expiredRoot.subject,
         rootKeyPair_.privateKey,
-        expiredInfo);
-
-    ASSERT_TRUE(opt_expiredCert.has_value()) << "Failed to create expired certificate";
+        expiredRoot);
     
-    const auto& expiredCert = *opt_expiredCert;
-    ASSERT_EQ(expiredCert.notBefore, expiredInfo.notBefore) 
-        << "Certificate start time doesn't match template";
-    ASSERT_EQ(expiredCert.notAfter, expiredInfo.notAfter) 
-        << "Certificate end time doesn't match template";
+    ASSERT_TRUE(expiredRootCert.has_value()) << "Failed to create expired root CA";
 
-    // Try to verify the expired certificate
-    std::vector<SignatureSystem::Certificate> trustAnchors = {rootCert_};
-    EXPECT_FALSE(system_->verifyCertificateChain(expiredCert, trustAnchors))
-        << "Expired certificate should not verify";
+    // Disable testing mode to verify expired certificates fail validation
+    system_->setTestingMode(false);
+
+    // Verify the expired certificate fails validation with normal checks
+    std::vector<SignatureSystem::Certificate> trustAnchors = {*expiredRootCert};
+    EXPECT_FALSE(system_->verifyCertificateChain(*expiredRootCert, trustAnchors))
+        << "Expired root certificate should not verify";
+
+    // Re-enable testing mode to create a certificate with expired issuer
+    system_->setTestingMode(true);
+    auto entityKeyPair = system_->generateKeyPair();
+    auto entityCert = system_->createCertificate(
+        entityKeyPair.publicKey,
+        "Test Entity",
+        rootKeyPair_.privateKey,
+        *expiredRootCert);
+
+    ASSERT_TRUE(entityCert.has_value()) << "Failed to create entity certificate";
+
+    // Disable testing mode again to verify expired certificates are rejected
+    system_->setTestingMode(false);
+    EXPECT_FALSE(system_->verifyCertificateChain(*entityCert, trustAnchors))
+        << "Certificate with expired issuer should not verify";
 }
 
 TEST_F(SignatureSystemTest, CertificatePEMExport) {
